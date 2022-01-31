@@ -1,0 +1,26 @@
+.text-center{
+    font-family: 'Times New Roman', Times, serif;
+    color: #6f42c1;
+    font-size: 45px;
+}
+
+.page_body{
+    margin: 0;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) 
+
+}
+
+.nav-link{
+    color: #6f42c1 !important;
+}
+
+.login_btn{
+    background-color: #6f42c1 !important;
+    border: inherit;
+}
+
+
