@@ -16,21 +16,23 @@
     <div class="row">
 
         <div class="card-body col-lg-12 col-md-12 col-sm-12">
-            <div class="input-group mb-3 mt-2">
-                <select class="form-select" id="inputGroupSelect04">
-                    <option selected>Choose...</option>
-                    <option value="1">Restaurants</option>
-                    <option value="2">Barber shops</option>
-                    <option value="3">Hotels</option>
-                    <option value="3">Gym</option>
-                    <option value="3">Garden</option>
-                </select>
+            <form action="{{route('business.search')}}" method="GET">
+                @csrf
+                <div class="input-group mb-3 mt-2">
+                    <select class="form-select" name="category" id="inputGroupSelect04">
+                        <option value="">Choose...</option>
+                        @foreach ($categories as $cat)
+                        <option value="{{$cat->id}}">{{$cat->category}}</option>
+                        @endforeach
 
-                <button class="btn btn-outline-secondary" type="button">Get</button>
+                    </select>
 
-            </div>
+                    <button class="btn btn-outline-secondary" type="submit">Get</button>
 
-            <em class="mt-3">select from categories to see available locations...</em>
+                </div>
+            </form>
+
+            <em class="mt-3">select from categories to see available business...</em>
         </div>
 
     </div>

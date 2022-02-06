@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\BusinessController;
 use App\Http\Controllers\Dashboard\BusinessPhotoController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\MakeManagerRequestController;
+use App\Http\Controllers\Home\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,9 +22,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home.index');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/get-businesses', [HomeController::class, 'showBusinessViaCategory'])->name('business.search');
+Route::get('/get-business/{id}', [HomeController::class, 'showSingleBusiness'])->name('single-business');
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
