@@ -32,7 +32,7 @@
     <div class="col-md-6 offset-3">
         <em style="font-size:20px;" class="text-center">Get business by category...</em>
 
-        <form method="GET" action="" id="get_categories">
+        <form method="GET" action="{{route('dashboard.get-business-by-cat')}}" id="get_categories">
             @csrf
             <div class="input-group mb-3 mt-2">
 
@@ -43,7 +43,7 @@
                     @endforeach
                 </select>
 
-                <button class="btn btn-outline-secondary" type="button">Get</button>
+                <button class="btn btn-outline-secondary" type="submit">Get</button>
             </div>
         </form>
     </div>

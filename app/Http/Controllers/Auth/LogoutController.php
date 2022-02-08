@@ -10,6 +10,10 @@ class LogoutController extends Controller
 {
     public function store()
     {
+        if(request()->expectsJson()){
+            auth()->user()->tokens()->delete();
+            return 'LoggedOut';
+        }
         auth()->logout();
         return redirect(route('login'));
     }

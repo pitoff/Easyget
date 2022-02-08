@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+//home routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/get-businesses', [HomeController::class, 'showBusinessViaCategory'])->name('business.search');
 Route::get('/get-business/{id}', [HomeController::class, 'showSingleBusiness'])->name('single-business');
@@ -37,6 +37,7 @@ Route::post('/logout', [LogoutController::class, 'store'])->name('logout');
 Route::get('/category', [CategoryController::class, 'index'])->name('addCategory');
 Route::post('/category', [CategoryController::class, 'store']);
 
+//dashboard routes
 Route::name('dashboard.')->prefix('dashboard')->group(function(){
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
 
@@ -50,11 +51,14 @@ Route::name('dashboard.')->prefix('dashboard')->group(function(){
     Route::get('/delete-business/{id}/delete', [BusinessController::class, 'delete']);
     Route::delete('/business/{id}/delete', [BusinessController::class, 'destroy'])->name('remove-business');
 
+    Route::get('/get-businesses-by-cat', [BusinessController::class, 'getBusinessByCategory'])->name('get-business-by-cat');
+
     Route::get('/add-business-photo', [BusinessPhotoController::class, 'create'])->name('add-photo');
     Route::post('/add-business-photo', [BusinessPhotoController::class, 'store']);
     Route::delete('/remove-business-photo/{businessPhoto}/delete', [BusinessPhotoController::class, 'removePhoto'])->name('remove-business-photo');
 });
 
+//admin routes
 Route::name('admin.')->prefix('admin')->group(function(){
     
     Route::get('/view-make-manager-requests', [MakeManagerRequestController::class, 'showRequests'])->name('view-make-manager-requests');
