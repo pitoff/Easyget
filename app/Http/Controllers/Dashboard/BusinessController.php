@@ -13,12 +13,12 @@ class BusinessController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
     }
 
     public function index(Request $request)
     {
-        if(request()->expectsJson()){
+        if (request()->expectsJson()) {
             return BusinessResource::collection(Business::paginate());
         }
     }
@@ -32,8 +32,28 @@ class BusinessController extends Controller
 
     public function store(Request $request)
     {
-       $this->validateBusiness();
+        if (request()->expectsJson()) {
+            $fields = $request->validate([
+                'category_id' => 'required',
+                'business_name' => 'required',
+                'description' => 'required',
+                'land_mark' => 'required',
+                'address' => 'required',
+                'contact' => 'required'
+            ]);
 
+            $fields['user_id'] = $request->user()->id;
+            //check if cat id exists
+            $catId = Category::find($fields['category_id']);
+            if (!$catId) {
+                return 'Category Id is not available';
+            }
+            $createBusiness = Business::create($fields);
+
+            return new BusinessResource($createBusiness);
+        }
+
+        $this->validateBusiness();
         Business::create([
             'user_id' => auth()->user()->id,
             'category_id' => $request->business_cat,
@@ -48,10 +68,9 @@ class BusinessController extends Controller
 
     public function show(Business $business)
     {
-        if(request()->expectsJson()){
-            
-            return new BusinessResource($business);
+        if (request()->expectsJson()) {
 
+            return new BusinessResource($business);
         }
 
         $user_id = auth()->user()->id;
@@ -62,15 +81,21 @@ class BusinessController extends Controller
         ]);
     }
 
-    public function getBusinessByCategory(Request $request)
+    public function getBusinessByCategory(Request $request, $id)
     {
         $get_cat_name = Category::find($request->category);
         $where = [
             'category_id' => $request->category,
             'user_id' => auth()->user()->id
         ];
+
+        if (request()->expectsJson()) {
+            return BusinessResource::collection(Business::where(['user_id' => auth()->user()->id, 'category_id' => $id])
+                ->paginate());
+        }
+
         $getBusiness = Business::where($where)->paginate();
-        
+
         return view('dashboard.is_manager.business_by_cat', [
             'business' => $get_cat_name,
             'businesses' => $getBusiness
@@ -87,7 +112,35 @@ class BusinessController extends Controller
 
     public function update(Request $request, Business $business)
     {
+        if (request()->expectsJson()) {
+            $fields = $request->validate([
+                'category_id' => 'required',
+                'business_name' => 'required',
+                'description' => 'required',
+                'land_mark' => 'required',
+                'address' => 'required',
+                'contact' => 'required'
+            ]);
+
+            // $fields['user_id'] = $request->user()->id;
+            
+            //check if business is yours
+            if($request->user()->id != $business->user_id){
+                return 'business is not yours';
+            }
+            //check if cat id exists
+            $catId = Category::find($fields['category_id']);
+            if (!$catId) {
+                return 'Category Id is not available';
+            }
+            
+            $business->update($fields);
+
+            return new BusinessResource($business);
+        }
+
         $this->validateBusiness();
+        $this->authorize('update', $business);
 
         Business::where('id', $business->id)->update([
             'category_id' => $request->business_cat,
@@ -104,15 +157,15 @@ class BusinessController extends Controller
     public function delete($id)
     {
         $business = Business::find($id);
-        if($business){
+        if ($business) {
             return response()->json([
                 'status' => 200,
                 'business' => $business
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'Student was not found on database'
+                'message' => 'Business was not found on database'
             ]);
         }
     }
@@ -129,7 +182,7 @@ class BusinessController extends Controller
 
     public function validateBusiness()
     {
-        return request()->validate([
+        request()->validate([
             'business_cat' => 'required',
             'business_name' => 'required',
             'description' => 'required',

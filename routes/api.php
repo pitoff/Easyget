@@ -27,6 +27,9 @@ Route::middleware('auth:sanctum')->group(function(){
         
         Route::get('/businesses', [BusinessController::class, 'index']);
         Route::get('/business/{business}', [BusinessController::class, 'show']);
+        Route::get('/get-businesses-by-cat/{id}', [BusinessController::class, 'getBusinessByCategory']);
+        Route::post('/create-business', [BusinessController::class, 'store']);
+        Route::put('/business/edit/{business}', [BusinessController::class, 'update']);
         Route::post('/logout', [LogoutController::class, 'store']);
     
     });
